@@ -35,7 +35,8 @@ diffusion <- function(graph, lambda,seed){
 #create a unit vector of that indicates the diffusions status of a vertex
   state<-vector(length=n)
 #sample tau for every vertex
-  tauvector=abs(rnorm(n, mean=lambda, sd=0.5))
+  tauvector=rnorm(n, mean=lambda, sd=0.5)
+tauvector=unlist(lapply(tauvector, function(x) ifelse(x>0, x, 0)))
 #bind three vectors into dataframe
   infection_state=cbind(vertices, state,tauvector)
   infection_state=as.data.frame(infection_state)
@@ -71,7 +72,7 @@ pairwise_search<- function(graph, lambda) {
   for (j in 1:(V-1)) {
     for (k in (j+1):V) {
       pair = c(j,k)
-      measure = map_dbl(1:60, function(x) diffusion(graph, pair, lambda)) %>% mean
+      measure = map_dbl(1:60, function(x) diffusion(graph, lambda, pair)) %>% mean
       df[i, ] = list(j=j, k=k, measure=measure) 
       print(str_interp("${i} out of ${V*(V-1)/2} done."))
       if (i == V*(V-1)/2) break
@@ -80,4 +81,4 @@ pairwise_search<- function(graph, lambda) {
   }
   return(df)
 }
-pairwise_search(graph, 2)
+result<-pairwise_search(graph, 2)
