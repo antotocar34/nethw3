@@ -21,3 +21,19 @@ runOnePeriod = function(lambda, graph) {
 }
 
 
+function pairwise_search(graph, lambda) {
+    V <- gorder(graph)
+    df <- data.frame(matrix(nrow=(V*(V-1))/2 , ncol=3))
+    i = 1
+    for (j in 1:(V-1)) {
+        for (k in (j+1):V) {
+            pair = c(j,k)
+            measure = map_dbl(1:60, function(x) diffusion(graph, pair, lambda)) %>% mean
+            df[i, ] = list(j=j, k=k, measure=measure) 
+            print(str_interp("${i} out of ${V*(V-1)/2} done."))
+            if (i == V*(V-1)/2) break
+            i = i + 1
+        }
+    }
+    return(df)
+}
