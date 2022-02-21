@@ -96,7 +96,7 @@ lesmis_graph %>%
   ggraph() +
   geom_edge_link0(colour = 'grey75') +
   geom_node_point( show.legend = FALSE) +
-  geom_node_point(aes(colour="red"),g2,show.legend = FALSE)+
+  geom_node_point(aes(filter = pair))+
   scale_colour_brewer(palette = 'Set1') +
   theme_void()+ggtitle('Les Miserables Network with 76 Vertices and 250 Edges ')
 #result, pair= 41 and 42 with an information rate of 0.2122807
