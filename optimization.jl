@@ -1,0 +1,22 @@
+using JuMP
+using Ipopt
+
+model = Model(Ipopt.Optimizer)
+@variable(model, x[1:3] >= 0)
+@variable(model, 1 >= z_1 >= 0)
+@variable(model, 1 >= z_3 >= 0)
+@NLobjective(model, Min, x[1]*(1+x[1]) + 3x[2]^2 + x[3]*(1+x[3]) )
+@constraint(model, x[[1, 3]] .<= 1)
+@constraint(model, c1, x[1] + z_1 == 1)
+@constraint(model, c2, x[3] + z_3 == 1)
+@constraint(model, c3, x[2] - z_1 - z_3 == 0)
+print(model)
+optimize!(model)
+@show termination_status(model)
+@show primal_status(model)
+@show dual_status(model)
+@show objective_value(model)
+@show round.(value.(x), digits=4)
+@show round.(value.([z_1, z_3]), digits=4)
+@show shadow_price(c1)
+@show shadow_price(c2)
